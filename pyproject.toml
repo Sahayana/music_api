@@ -1,0 +1,45 @@
+[tool.poetry]
+name = "music_api"
+version = "0.1.0"
+description = ""
+authors = ["sahayana <saokhueyang@gmail.com:>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Django = "^4.0.2"
+django-ninja = "^0.17.0"
+isort = "^5.10.1"
+black = "^22.1.0"
+mypy = "^0.931"
+django-stubs = "^1.9.0"
+django-cors-headers = "^3.11.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line_length = 150
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main"]
+python_version = 3.9
+strict = true
+
+[[tool.mypy.overrides]]
+module = "*.migrations.*"
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = "manage"
+ignore_errors = true
+
+
+[tool.django-stubs]
+django_settings_module = "config.settings"
+
+
+[tool.isort]
+profile = "black"

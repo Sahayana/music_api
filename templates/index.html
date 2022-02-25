@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <!-- form으로 만들어 두었지만 실제론 ajax로 전송하기에 form 삭제해도 무방 -->
+    <form action="http://localhost:8000/api/v1/nsts/"  method="post" enctype="multipart/form-data">
+        <input type="text" name="key" id="title">
+        <input type="file" name="img" id="img">
+        <button id="submitBtn">전송</button>
+    </form>
+    <!-- 인공지능 서버에서 받아온 img url을 받아 넣을 img태그 -->
+    <img id="preview">
+    <script>
+        const preview = document.getElementById('preview')
+        const submitBtn = document.getElementById('submitBtn')
+        submitBtn.addEventListener('click',(e)=>{
+            // 버튼을 눌렀을 때 새로고침 되지 않도록
+            e.preventDefault()
+            // title을 받아와서 key값에 넣어두고
+            const key = document.getElementById('title').value
+            // img 값을 받아와서 img에 넣어둔다.
+            const img =  $('#img')[0].files[0]
+            // ajax로 보내야하기에 form을 만들어주고 각 값을 넣어준다 이 때 'key, img 값은 인공지능서버의 스키마 값과 일치해야함'
+            let form_data = new FormData()
+            form_data.append('key',key)
+            form_data.append('img',img)
+            $.ajax({
+                type:"POST",
+                // 인공지능 서버 url 마지막에 슬래시 필수
+                url:"http://localhost:8000/api/v1/nsts/",
+                contentType : false,
+                processData : false,
+                data: form_data ,
+                dataType:"JSON",
+                // 성공하면 preview의 src에 url넣어 출력
+                success : function(json) {
+                    preview.src = json.file_url
+                }
+                });
+        })
+        // csrf token
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": '{{csrf_token}}' }
+          });
+    </script>
+</body>
+</html>
